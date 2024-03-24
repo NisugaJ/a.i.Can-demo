@@ -47,10 +47,10 @@ class AiCanAssistant:
         )
 
     def upload_context_file(self, file_name: str):
-        file = self.add_file(file_name)
+        file = AiCanAssistant.add_file(file_name)
         self.context_file_ids.append(file.id)
 
-    def add_file(self, file_name: str):
+    def add_file(file_name: str):
         file = openai.files.create(
             file=open(file_name, "rb"),
             purpose='assistants'
@@ -65,7 +65,8 @@ class AiCanAssistant:
     def run_thread(self, thread: Thread):
         run = openai.beta.threads.runs.create(
             thread_id=thread.id,
-            assistant_id=self.assistant_id
+            assistant_id=self.assistant_id,
+            instructions="Please use the given file with the message to answer the question."
         )
 
         messages = []
@@ -124,11 +125,28 @@ class AiCanAssistant:
         print(len(messages.data))
         return len(messages.data)
 
-    def add_message(thread_id: str, role: str, content: str):
-        new_msg = openai.beta.threads.messages.create(
-            thread_id=thread_id,
-            role=role,
-            content=content
-        )
+    def add_message(thread_id: str, role: str, content: str, files: list = []):
+        if len(files) > 0:
+            file_ids = []
+            for file in files:
+                openai_file = AiCanAssistant.add_file(
+                    file
+                )
+                file_ids.append(openai_file.id)
+
+            print(f"File IDs: {file_ids}")
+
+            new_msg = openai.beta.threads.messages.create(
+                thread_id=thread_id,
+                role=role,
+                content=content,
+                file_ids=file_ids
+            )
+        else:
+            new_msg = openai.beta.threads.messages.create(
+                thread_id=thread_id,
+                role=role,
+                content=content
+            )
         return new_msg
 

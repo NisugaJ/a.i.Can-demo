@@ -11,6 +11,10 @@ st.set_page_config(layout="wide")
 
 st.title('a.i.Can - Demo App')
 
+selected_user = None
+user_files = None 
+user_file_paths = []
+
 with st.sidebar:
     openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
     if openai_api_key:
@@ -25,7 +29,7 @@ with st.sidebar:
     user_ids = {user.user_id: user for user in users}
 
     selected_user = user_ids[st.selectbox('Select a user', list(user_ids.keys()), index=0, format_func=lambda x: user_ids[x].name)]
-    st.write(f'You selected {selected_user.name} {selected_user.user_id}')
+    st.write(f'You selected {selected_user.name} ({selected_user.user_id})')
 
     user_files = session.query(UserFile).filter(UserFile.user_id == selected_user.user_id)
     user_files_dict = {user_file.file_id :[user_file.file_name, user_file.file_id] for user_file in user_files}
@@ -63,7 +67,12 @@ if prompt := st.chat_input():
     if thread is None:
         thread = asst.create_thread()
 
-    AiCanAssistant.add_message(thread.id, "user", prompt) 
+    if len(user_file_paths) == 0:
+        for user_file in user_files:
+            user_file_paths.append(f"./data/user-data/{user_file.file_name}")
+        print(user_file_paths)
+
+    AiCanAssistant.add_message(thread.id, "user", prompt, files=user_file_paths) 
 
     with st.spinner('Wait for it...'):
         response = asst.run_thread(thread)
