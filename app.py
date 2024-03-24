@@ -67,10 +67,10 @@ if prompt := st.chat_input():
     if thread is None:
         thread = asst.create_thread()
 
-    if len(user_file_paths) == 0:
-        for user_file in user_files:
-            user_file_paths.append(f"./data/user-data/{user_file.file_name}")
-        print(user_file_paths)
+    # if len(user_file_paths) == 0: # TODO: Improve the app use the previously uploaded files
+    for user_file in user_files:
+        user_file_paths.append(f"./data/user-data/{user_file.file_name}")
+    print(user_file_paths)
 
     AiCanAssistant.add_message(thread.id, "user", prompt, files=user_file_paths) 
 
