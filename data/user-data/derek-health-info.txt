@@ -1,0 +1,3 @@
+Derek is a 62-year-old non-smoker with hypertension. Using QRISK2, you have
+calculated that he has a 15% estimated 10-year risk of developing coronary
+heart disease (CHD) or having a stroke. 

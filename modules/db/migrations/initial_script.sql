@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS  user (
+    user_id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS  user_file (
+    file_id INTEGER NOT NULL PRIMARY KEY,
+    file_name VARCHAR,
+    user_id INTEGER REFERENCES user
+);
+

@@ -7,6 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+streamlit = "^1.32.2"
+sqlalchemy = "^2.0.29"
+openai = "^1.14.2"
+langchain = "^0.1.13"
 
 
 [build-system]
